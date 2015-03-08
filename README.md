@@ -26,18 +26,7 @@ The following sources were referenced during the creation of Audiolens:
 * TBD
 
 ## License
-Audiolens is Copyright 2015, Andrew Lin, and released under GPL 3.0.
-
-Audiolens is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Audiolens is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-A copy of the GNU General Public License is available in the license.txt file
-distributed with the Audiolens source.  If not, see 
-<http://www.gnu.org/licenses/>.
+Copyright 2015, Andrew Lin.
+All rights reserved.
+Licensed under the BSD 3-clause License. See LICENSE.txt or
+<http://opensource.org/licenses/BSD-3-Clause>.
