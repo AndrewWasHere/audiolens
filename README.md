@@ -17,13 +17,23 @@ The following application and libraries are needed by Audiolens:
 
 * Python 3.4.2 or later (http://python.org).
 * numpy 1.8.2 or later (http://numpy.org) (sudo atp-get install python3-numpy).
+* scipy
+* matplotlib
 
 Audiolens was written and tested on Ubuntu 14.10.
 
 ## References
 The following sources were referenced during the creation of Audiolens:
 
-* TBD
+* http://www.labbookpages.co.uk/audio/beamforming/delaySum.html
+* Allred, Daniel. Evaluation and Comparison of Beamforming Algorithms for 
+  Microphone Array Speech Processing. Masters Thesis, Georgia Institute of
+  Technology.
+  http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.136.4516&rep=rep1&type=pdf
+* Zhang Wenyi. Microphone Array Processing for Speech: Dual Channel 
+  Localization, Robust Beamforming and ICA Analysis. PhD Dissertation,
+  University of California, San Diego.
+  https://escholarship.org/uc/item/8pb5353s
 
 ## License
 Copyright 2015, Andrew Lin.

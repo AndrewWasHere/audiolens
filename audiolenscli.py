@@ -1,8 +1,8 @@
 """
-Copyright 2015, Andrew Lin.
+Copyright 2015 Andrew Lin.
 All rights reserved.
 Licensed under the BSD 3-clause License. See LICENSE.txt or
-<http://opensource.org/licenses/BSD-3-Clause>.
+<http://opensource.org/licenses/BSD-3-Clause>. 
 """
 import argparse
 import os
@@ -51,11 +51,10 @@ def configure_logging(args):
 
 
 def main():
-    """Launch audiolens."""
+    """Launch audiolenscli."""
     args = parse_command_line()
     with log.logger(**configure_logging(args)):
         _log.info('Audiolens starting with the following arguments: %s', args)
 
 if __name__ =='__main__':
     main()
-
