@@ -23,7 +23,7 @@ class AudiofileTestCase(unittest.TestCase):
             'great_horned_owl.wav'
         )
 
-    def test_non_audio(self):
+    def test_read_non_audio(self):
         """Test read valid file, not audio."""
         with tempfile.NamedTemporaryFile() as tf:
             with open(tf.name, 'w') as f:
@@ -39,10 +39,27 @@ class AudiofileTestCase(unittest.TestCase):
 
     def test_read_wav(self):
         """Test read valid audio file."""
-        datarate, data = audiofile.read(self.gold_audio)
+        datarate, data = audiofile.read(self.gold_audio, False)
 
         self.assertEqual(datarate, 44100)
         self.assertEqual(data.shape, (162630, 2))
+
+        # Verify default for separate_channels parameter.
+        datarate_prime, data_prime = audiofile.read(self.gold_audio)
+
+        self.assertEqual(datarate_prime, datarate)
+        self.assertTrue(np.array_equal(data_prime, data))
+
+        # Verify separate channels separates channels.
+        datarate_prime, data_prime = audiofile.read(self.gold_audio, True)
+
+        self.assertTrue(isinstance(data_prime, list))
+        self.assertEqual(datarate_prime, datarate)
+        self.assertEqual(len(data_prime), data.shape[1])
+        for channel in range(data.shape[1]):
+            self.assertTrue(
+                np.array_equal(data[:, channel], data_prime[channel])
+            )
 
     def test_write_wav(self):
         """Test write wav file."""
@@ -50,6 +67,31 @@ class AudiofileTestCase(unittest.TestCase):
         with tempfile.NamedTemporaryFile() as tf:
             audiofile.write(tf.name, datarate, data)
             datarate_prime, data_prime = audiofile.read(tf.name)
+
+        self.assertEqual(datarate_prime, datarate)
+        self.assertTrue(np.array_equal(data_prime, data))
+
+    def test_write_wav_mono(self):
+        """Test writing single channel wav file."""
+        datarate, data = audiofile.read(self.gold_audio, True)
+        ref_channel = data[0]
+        with tempfile.NamedTemporaryFile() as tf:
+            audiofile.write(tf.name, datarate, ref_channel)
+            datarate_prime, data_prime = audiofile.read(tf.name)
+
+        self.assertEqual(datarate_prime, datarate)
+        self.assertTrue(np.array_equal(data_prime, ref_channel))
+
+    def test_write_wav_channels(self):
+        """Test writing wav file from separate channels."""
+        datarate, data = audiofile.read(self.gold_audio, False)
+        datarate_prime, data_prime = audiofile.read(self.gold_audio, True)
+
+        self.assertTrue(isinstance(data_prime, list))
+
+        with tempfile.NamedTemporaryFile() as tf:
+            audiofile.write(tf.name, datarate_prime, data_prime)
+            datarate_prime, data_prime = audiofile.read(tf.name, False)
 
         self.assertEqual(datarate_prime, datarate)
         self.assertTrue(np.array_equal(data_prime, data))
