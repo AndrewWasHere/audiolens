@@ -13,12 +13,16 @@ Supported output audio file formats include:
 * wav
 
 ## Requirements
-The following application and libraries are needed by Audiolens:
+The following applications and libraries are needed by Audiolens:
 
-* Python 3.4.2 or later (http://python.org).
-* numpy 1.8.2 or later (http://numpy.org) (sudo atp-get install python3-numpy).
-* scipy
-* matplotlib
+* Python 3.4.2 or later. 
+  http://python.org, apt-get install python3
+* numpy 1.8.2 or later.
+  http://numpy.org, apt-get install python3-numpy.
+* scipy 0.14.0 or later.
+  http://scipy.org, apt-get install python3-scipy.
+* matplotlib 1.3.1 or later.
+  http://matplotlib.org, apt-get install python3-matplotlib.
 
 Audiolens was written and tested on Ubuntu 14.10.
 
@@ -28,11 +32,11 @@ The following sources were referenced during the creation of Audiolens:
 * http://www.labbookpages.co.uk/audio/beamforming/delaySum.html
 * Allred, Daniel. Evaluation and Comparison of Beamforming Algorithms for 
   Microphone Array Speech Processing. Masters Thesis, Georgia Institute of
-  Technology.
+  Technology. August 2006.
   http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.136.4516&rep=rep1&type=pdf
 * Zhang Wenyi. Microphone Array Processing for Speech: Dual Channel 
   Localization, Robust Beamforming and ICA Analysis. PhD Dissertation,
-  University of California, San Diego.
+  University of California, San Diego. 2010.
   https://escholarship.org/uc/item/8pb5353s
 
 ## License
