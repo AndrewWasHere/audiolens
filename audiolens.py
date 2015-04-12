@@ -20,40 +20,14 @@ def parse_command_line():
         default=None,
         help='Path to audio file to load.'
     )
-    parser.add_argument(
-        '--log',
-        nargs='?',
-        default=None,
-        help='Path to log file.'
-    )
-    parser.add_argument(
-        '-v',
-        action='count',
-        default=0
-    )
+    log.add_log_parser_arguments(parser)
     return parser.parse_args()
-
-
-def configure_logging(args):
-    log_levels = (log.WARNING, log.INFO, log.DEBUG, log.NOTSET)
-    level = log_levels[min(args.v, len(log_levels) - 1)]
-    settings = {
-        'stream_settings': {
-            'level': level
-        }
-    }
-    if args.log:
-        settings['file_settings'] = {
-            'path': os.path.abspath(os.path.expanduser(args.log))
-        }
-
-    return settings
 
 
 def main():
     """Launch audiolens."""
     args = parse_command_line()
-    with log.logger(**configure_logging(args)):
+    with log.logger(**log.configure_logging(args)):
         _log.info('Audiolens starting with the following arguments: %s', args)
 
 if __name__ =='__main__':
