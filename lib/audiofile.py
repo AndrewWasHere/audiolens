@@ -16,7 +16,7 @@ _log = log.get_logger(__name__)
 def read(filename, separate_channels=False):
     """Read audio file.
 
-    Arguments:
+    Args:
         filename (str): Path to file to read.
         separate_channels (bool): Separate channels into vectors instead of
             returning a single data array
@@ -43,7 +43,7 @@ def read(filename, separate_channels=False):
 def write(filename, datarate, data):
     """Write data to audio file.
 
-    Arguments:
+    Args:
         filename (str): Path to file to write to.
         datarate (int): Sample rate (in samples/second).
         data (numpy.ndarray or list of numpy.ndarrays): Samples as a 1-D or 2-D
