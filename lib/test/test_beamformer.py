@@ -28,30 +28,34 @@ class TestBeamFormer(BeamFormer):
 
 class BeamFormerTestCase(unittest.TestCase):
     """Test BeamFormer via TestBeamFormer class."""
-    def test_too_few_channels(self):
-        _, gold_audio = audiofile.read(
+    @classmethod
+    def setUpClass(cls):
+        _, cls.gold_audio = audiofile.read(
+            path.abs_path(
+                os.path.join('gold', 'great_horned_owl.wav'),
+                root=__file__
+            ),
+            separate_channels=False
+        )
+
+        _, cls.gold_audio_channels = audiofile.read(
             path.abs_path(
                 os.path.join('gold', 'great_horned_owl.wav'),
                 root=__file__
             ),
             separate_channels=True
         )
+
+    def test_too_few_channels(self):
         bf = TestBeamFormer(None)
         with self.assertRaises(ValueError):
-            bf.process(gold_audio[:1])  # One channel of audio.
+            bf.process(self.gold_audio_channels[:1])  # One channel of audio.
 
         with self.assertRaises(ValueError):
-            bf.process(gold_audio[0])  # Single channel ndarray.
+            bf.process(self.gold_audio_channels[0])  # Single channel ndarray.
 
     def test_too_many_channels(self):
-        _, gold_audio = audiofile.read(
-            path.abs_path(
-                os.path.join('gold', 'great_horned_owl.wav'),
-                root=__file__
-            ),
-            separate_channels=True
-        )
-        audio = gold_audio * 2  # Four channels.
+        audio = self.gold_audio_channels * 2  # Four channels.
         bf = TestBeamFormer(3)
         with self.assertRaises(ValueError):
             bf.process(audio)
@@ -60,43 +64,22 @@ class BeamFormerTestCase(unittest.TestCase):
             bf.process(np.column_stack(audio))
 
     def test_ndarray_audio(self):
-        _, gold_audio = audiofile.read(
-            path.abs_path(
-                os.path.join('gold', 'great_horned_owl.wav'),
-                root=__file__
-            ),
-            separate_channels=False
-        )
-        _, gold_audio_channels = audiofile.read(
-            path.abs_path(
-                os.path.join('gold', 'great_horned_owl.wav'),
-                root=__file__
-            ),
-            separate_channels=True
-        )
         bf = TestBeamFormer(None)
-        bf.process(gold_audio)
+        bf.process(self.gold_audio)
         self.assertTrue(bf.process_called)
-        for idx in range(len(gold_audio_channels)):
+        for idx in range(len(self.gold_audio_channels)):
             self.assertTrue(
-                np.array_equal(gold_audio_channels[idx], bf.audio[idx])
+                np.array_equal(self.gold_audio_channels[idx], bf.audio[idx])
             )
 
     def test_list_audio(self):
-        _, gold_audio = audiofile.read(
-            path.abs_path(
-                os.path.join('gold', 'great_horned_owl.wav'),
-                root=__file__
-            ),
-            separate_channels=True
-        )
         bf = TestBeamFormer(None)
-        bf.process(gold_audio)
+        bf.process(self.gold_audio_channels)
         self.assertTrue(bf.process_called)
-        self.assertEqual(len(gold_audio), len(bf.audio))
-        for idx in range(len(gold_audio)):
+        self.assertEqual(len(self.gold_audio_channels), len(bf.audio))
+        for idx in range(len(self.gold_audio_channels)):
             self.assertTrue(
-                np.array_equal(gold_audio[idx], bf.audio[idx])
+                np.array_equal(self.gold_audio_channels[idx], bf.audio[idx])
             )
 
 
