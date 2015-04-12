@@ -6,11 +6,12 @@ Licensed under the BSD 3-clause License. See LICENSE.txt or
 """
 import os
 import unittest
+
 import numpy as np
 
 from lib import audiofile
 from lib.albatross import path
-from lib.beamformer import BeamFormer
+from lib.beamformers.beamformer import BeamFormer
 
 
 class TestBeamFormer(BeamFormer):
@@ -32,7 +33,13 @@ class BeamFormerTestCase(unittest.TestCase):
     def setUpClass(cls):
         _, cls.gold_audio = audiofile.read(
             path.abs_path(
-                os.path.join('gold', 'great_horned_owl.wav'),
+                os.path.join(
+                    '..',
+                    '..',
+                    'test',
+                    'gold',
+                    'great_horned_owl.wav'
+                ),
                 root=__file__
             ),
             separate_channels=False
@@ -40,7 +47,13 @@ class BeamFormerTestCase(unittest.TestCase):
 
         _, cls.gold_audio_channels = audiofile.read(
             path.abs_path(
-                os.path.join('gold', 'great_horned_owl.wav'),
+                os.path.join(
+                    '..',
+                    '..',
+                    'test',
+                    'gold',
+                    'great_horned_owl.wav'
+                ),
                 root=__file__
             ),
             separate_channels=True
