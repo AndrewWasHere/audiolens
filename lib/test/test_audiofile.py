@@ -11,16 +11,16 @@ import unittest
 import numpy as np
 
 from lib import audiofile
+from lib.albatross.path import abs_path
 
 
 class AudiofileTestCase(unittest.TestCase):
     """Test audiofile interfaces."""
     @classmethod
     def setUpClass(cls):
-        cls.gold_audio = os.path.join(
-            os.path.dirname(__file__),
-            'gold',
-            'great_horned_owl.wav'
+        cls.gold_audio = abs_path(
+            os.path.join('gold', 'great_horned_owl.wav'),
+            root=__file__
         )
 
     def test_read_non_audio(self):
@@ -35,7 +35,11 @@ class AudiofileTestCase(unittest.TestCase):
     def test_read_not_a_file(self):
         """Test read invalid file path."""
         with self.assertRaises(FileNotFoundError):
-            audiofile.read('/not/a/valid/path')
+            audiofile.read(
+                abs_path(
+                    os.path.join('not', 'a', 'valid', 'path'),
+                )
+            )
 
     def test_read_wav(self):
         """Test read valid audio file."""

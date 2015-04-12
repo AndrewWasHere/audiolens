@@ -7,6 +7,7 @@ Licensed under the BSD 3-clause License. See LICENSE.txt or
 import argparse
 import os
 from lib.albatross import log
+from lib.albatross import path
 
 
 _log = log.get_logger(__name__)
@@ -31,7 +32,15 @@ def parse_command_line():
         action='count',
         default=0
     )
-    return parser.parse_args()
+
+    args = parser.parse_args()
+
+    if args.filepath:
+        args.filepath = path.abs_path(args.filepath)
+    if args.log:
+        args.log = path.abs_path(args.log)
+
+    return args
 
 
 def configure_logging(args):

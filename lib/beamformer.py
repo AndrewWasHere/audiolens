@@ -4,6 +4,7 @@ All rights reserved.
 Licensed under the BSD 3-clause License. See LICENSE.txt or
 <http://opensource.org/licenses/BSD-3-Clause>. 
 """
+from abc import ABCMeta, abstractmethod
 import numpy as np
 from lib.albatross import log
 
@@ -11,93 +12,63 @@ from lib.albatross import log
 _log = log.get_logger(__name__)
 
 
-class BeamFormer():
-    """Audio Beam Former."""
-    def __init__(self):
-        self._l_channel = None
-        self._r_channel = None
-        self._autocorrelation = None
-        self._sources = []
+class BeamFormerError(Exception):
+    """Error while beam forming."""
+
+
+class BeamFormer(metaclass=ABCMeta):
+    """Audio beam former base class."""
+    def __init__(self, max_channels):
+        self.max_channels = max_channels
+
+    # Public Interfaces. #######################################################
 
     def process(self, audio):
         """Process audio file.
 
-        Pull left and right channels out of an audio file and do the
-        autocorrelation.
-
         Args:
-            audio (np.ndarray): two-channel audio.
+            audio (np.ndarray or list of np.ndarray): multi-channel audio.
+
+        Raises:
+            ValueError: Problem with audio.
+            BeamFormerError: Problem while processing audio.
         """
         _log.debug('%s.process(%s)', self.__class__.__name__, audio)
 
         # Process audio.
-        self._l_channel = np.zeros(0)
-        self._r_channel = np.zeros(0)
-        self._autocorrelation = np.correlate(
-            self._l_channel,
-            self._r_channel,
-            mode='full'
-        )
+        if isinstance(audio, np.ndarray):
+            _, channels = audio.shape
+            audio = [audio[:, n] for n in range(channels)]
 
-        # Identify sources.
+        n_channels = len(audio)
+        if n_channels < 2:
+            raise ValueError(
+                'Not enough channels in audio to beam form. (found %d)',
+                n_channels
+            )
 
-    def sources(self):
-        """Number of sources found in audiofile."""
-        _log.debug('%s.source()', self.__class__.__name__)
+        elif self.max_channels and n_channels > self.max_channels:
+            raise ValueError(
+                'Too many channels in audio. There cannot be more than %d '
+                'channels. Found %d.',
+                self.max_channels,
+                n_channels
+            )
 
-        return len(self._sources)
+        self._process(audio)  # Derived class implementation.
 
-    def audio(self, source=None):
-        """Get audio for source.
+    # Private methods. #########################################################
 
-        Returns the single-channel audio for the specified source. If source
-        is None, return the original audio (as one channel). Otherwise, return
-        the specified source.
+    @abstractmethod
+    def _process(self, audio):
+        """Process audio.
+
+        This function is implemented in derived classes.
 
         Args:
-            source (int, str, None): Audio source to return.
-                None => Original audio (as one channel).
-                'l' => Original audio, left channel only.
-                'r' => Original audio, right channel only.
-                Otherwise => Beam formed audio for source.
+            audio (list of np.ndarray): multi-channel audio.
+
+        Raises:
+            BeamFormerException (or a derivation thereof): Problem while
+                processing audio.
         """
-        _log.debug('%s.audio(%s)', self.__class__.__name__, source)
-
-        if source is None:
-            # Original audio as one channel.
-            return None
-
-        elif source == 'l':
-            # Left channel.
-            return self._l_channel[:]
-
-        elif source == 'r':
-            # Right channel.
-            return self._r_channel[:]
-
-        else:
-            # Source.
-            return self._extract_source(source)
-
-    def _extract_source(self, source):
-        """Extract source audio.
-
-        Beam form and extract source audio.
-        """
-        _log.debug('%s._extract_source(%s)', self.__class__.__name__, source)
-
-        source = self._sources[source]
-        pad = np.zeros(abs(source.phase))
-        if source.phase < 0:
-            left = np.concatenate((self._l_channel, pad))
-            right = np.concatenate((pad, self._r_channel))
-
-        elif source.phase > 0:
-            left = np.concatenate((pad, self._l_channel))
-            right = np.concatenate((self._r_channel + pad))
-
-        else:
-            left = self._l_channel
-            right = self._r_channel
-
-        return left + right
